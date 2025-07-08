@@ -31,6 +31,10 @@ export type Scalars = {
   DateTime: { input: unknown; output: unknown };
 };
 
+export type CreateDailyPhotoInput = {
+  note: Scalars['String']['input'];
+};
+
 export type CreateProfileInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   firstName: Scalars['String']['input'];
@@ -58,6 +62,10 @@ export type Mutation = {
   refreshToken: RefreshResponse;
   register: User;
   updataUser: UpdateUserResponse;
+};
+
+export type MutationCreateDailyPhotoArgs = {
+  input: CreateDailyPhotoInput;
 };
 
 export type MutationLoginArgs = {

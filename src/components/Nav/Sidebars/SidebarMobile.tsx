@@ -1,8 +1,9 @@
 'use client';
+import Dialog from '@/components/dailyPhotos/Dialog';
+import Drawer from '@/components/dailyPhotos/Drawer';
 import { mobileMenu } from '@/constants/menu';
 import { useOrientation } from '@/hooks/useOrientation';
 import { Menu } from '@/types/menu';
-import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -12,7 +13,7 @@ export default function SidebarMobile() {
 
   return (
     <div
-      className={`lg:hidden fixed bottom-0 w-full ${orientation == 'landscape-primary' ? 'hidden' : 'flex h-[10dvh]'} justify-center items-center p-3 gap-3 z-10`}
+      className={`lg:hidden fixed bottom-0 w-full ${orientation == 'landscape-primary' ? 'hidden' : 'flex h-[10dvh]'} justify-center items-center p-3 gap-3 z-10 pb-10`}
     >
       <div
         className={`${pathname == '/dailyPhotos' ? 'max-[400px]:w-[230px] w-75' : 'w-75'} duration-300 h-17.5 rounded-4xl flex justify-around items-center bg-white shadow-lg`}
@@ -27,12 +28,14 @@ export default function SidebarMobile() {
           </Link>
         ))}
       </div>
-      <button
-        className={`${pathname == '/dailyPhotos' ? 'flex' : 'hidden'} duration-300 w-15.5 h-15 justify-center items-center rounded-full bg-black cursor-pointer`}
-        id={pathname}
-      >
-        <Plus size={28} className="text-white" />
-      </button>
+      <div className={pathname == '/dailyPhotos' ? 'flex' : 'hidden'}>
+        <div className="min-[550px]:hidden ">
+          <Drawer />
+        </div>
+        <div className="lg:hidden max-[550px]:hidden">
+          <Dialog />
+        </div>
+      </div>
     </div>
   );
 }
