@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
 import { toast, Toaster } from 'sonner';
+import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
 
 type FormValues = {
   file: FileList;
@@ -103,7 +104,12 @@ export default function Dialog() {
           />
           {errors.file && <p className="text-red-500">{errors.file.message}</p>}
 
-          <Button type="submit">Надіслати</Button>
+          <div className="flex gap-5">
+            <AlertDialogCancel asChild>
+              <Button variant={'destructive'}>Cancel</Button>
+            </AlertDialogCancel>
+            <Button type="submit">Send</Button>
+          </div>
         </form>
       </AlertDialogContent>
     </AlertDialog>

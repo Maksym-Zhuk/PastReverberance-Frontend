@@ -22,7 +22,7 @@ export default function SidebarDesktop() {
             stiffness: 300,
             damping: 50,
           }}
-          className={`w-full h-full bg-white border rounded-2xl shadow-lg flex flex-col justify-between ${sidebarOpen ? 'items-start' : 'items-center'}`}
+          className={`w-full h-full bg-white border rounded-2xl shadow-lg flex flex-col justify-between ${sidebarOpen ? 'items-start' : 'items-center'} pb-1`}
         >
           <div className="w-full flex justify-end p-5">
             {sidebarOpen ? (

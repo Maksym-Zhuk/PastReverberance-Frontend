@@ -18,7 +18,7 @@ export default function SidebarNav({ menu, sidebarOpen }: Props) {
         <Link
           href={item.link}
           key={item.id}
-          className={`${pathname == item.link ? ' bg-black text-white' : 'text-black'} cursor-pointer w-full h-14 rounded-lg flex justify-center items-center p-4`}
+          className={`${pathname == item.link ? ' bg-black text-white' : 'text-black'} cursor-pointer w-full h-14 rounded-xl flex justify-center items-center p-4`}
         >
           <item.icon size={28} className="flex-shrink-0" />
           <m.div
