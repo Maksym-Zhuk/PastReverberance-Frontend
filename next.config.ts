@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/graphql',
-        destination: 'https://c6j1w7gd-8080.euw.devtunnels.ms/graphql',
+        destination: process.env.NEXT_PUBLIC_API_URL!,
       },
     ];
   },
