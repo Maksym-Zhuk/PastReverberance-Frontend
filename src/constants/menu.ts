@@ -1,42 +1,36 @@
 import type { Menu } from '@/types/menu';
-import { Calendar, CalendarSync, House, Settings, User2 } from 'lucide-react';
+import { Calendar, CalendarSync, Settings, User2 } from 'lucide-react';
 
 export const mobileMenu: Menu[] = [
   {
     id: 1,
-    name: 'Home',
-    link: '/',
-    icon: House,
-  },
-  {
-    id: 2,
     name: 'Daily Photos',
-    link: '/dailyPhotos',
+    link: '/',
     icon: Calendar,
   },
   {
-    id: 3,
+    id: 2,
     name: 'Rewind',
     link: '/rewind',
     icon: CalendarSync,
+  },
+  {
+    id: 3,
+    name: 'Profile',
+    link: '/profile',
+    icon: User2,
   },
 ];
 
 export const desktopMenu: Menu[] = [
   {
     id: 1,
-    name: 'Home',
-    link: '/',
-    icon: House,
-  },
-  {
-    id: 2,
     name: 'Daily Photos',
-    link: '/dailyPhotos',
+    link: '/',
     icon: Calendar,
   },
   {
-    id: 3,
+    id: 2,
     name: 'Rewind',
     link: '/rewind',
     icon: CalendarSync,

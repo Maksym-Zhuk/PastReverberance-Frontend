@@ -13,7 +13,7 @@ export default function SidebarMobile() {
 
   return (
     <div
-      className={`lg:hidden fixed bottom-0 w-full ${orientation == 'landscape-primary' ? 'hidden' : 'flex h-[10dvh]'} justify-center items-center p-3 gap-3 z-10 pb-10`}
+      className={`lg:hidden fixed top-[90dvh] w-full ${orientation == 'landscape-primary' ? 'hidden' : 'flex h-[10dvh]'} justify-center items-center p-3 gap-3 z-10 pb-10`}
     >
       <div
         className={`${pathname == '/dailyPhotos' ? 'max-[400px]:w-[230px] w-75' : 'w-75'} duration-300 h-17.5 rounded-4xl flex justify-around items-center bg-white shadow-lg`}
@@ -28,7 +28,7 @@ export default function SidebarMobile() {
           </Link>
         ))}
       </div>
-      <div className={pathname == '/dailyPhotos' ? 'flex' : 'hidden'}>
+      <div className={pathname == '/' ? 'flex' : 'hidden'}>
         <div className="min-[550px]:hidden ">
           <Drawer />
         </div>
