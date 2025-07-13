@@ -81,7 +81,7 @@ export default function UpdateDailyPhotoDialog({ data }: { data: DailyPhoto }) {
         },
       },
     });
-    setOpen(false);
+    closeDialog();
   };
 
   function openDialog() {

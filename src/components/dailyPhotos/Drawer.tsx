@@ -139,7 +139,7 @@ export default function Drawer() {
         <Plus size={28} className="text-white" />
       </DrawerTrigger>
       <Toaster className="z-100" />
-      <DrawerContent className="h-[60dvh]">
+      <DrawerContent className="h-[57.5dvh]">
         <DrawerHeader>
           <DrawerTitle>Select the desired file!</DrawerTitle>
         </DrawerHeader>
@@ -196,7 +196,7 @@ export default function Drawer() {
             />
           </div>
 
-          <Button type="submit">Надіслати</Button>
+          <Button type="submit">Send</Button>
         </form>
       </DrawerContent>
     </UIDrawer>
