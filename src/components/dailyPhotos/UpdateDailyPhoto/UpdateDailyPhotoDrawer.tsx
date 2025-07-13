@@ -91,67 +91,76 @@ export default function UpdateDailyPhotoDrawer({ data }: { data: DailyPhoto }) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button className="cursor-pointer" onClick={openDrawer}>
-          <Pencil />
-        </Button>
-      </DrawerTrigger>
-      <Toaster className="z-100" />
-      <DrawerContent className="h-[57.5dvh]">
-        <DrawerHeader>
-          <DrawerTitle>Edit dailyPhoto</DrawerTitle>
-          <DialogDescription>
-            Make changes to your dailyPhoto here. Click save when you&apos;re
-            done.
-          </DialogDescription>
-        </DrawerHeader>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          encType="multipart/form-data"
-          className="w-full flex flex-col justify-center items-center p-5 gap-5"
-        >
-          <div className="w-full flex flex-col gap-2">
-            <Textarea
-              placeholder="Type your note here."
-              id="note"
-              {...register('note', { required: 'Note is required' })}
-              className="resize-none w-full h-50"
-            />
-            {errors.note && (
-              <p className="text-red-500">{errors.note.message}</p>
-            )}
+    <div className="lg:hidden flex">
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>
+          <Button className="cursor-pointer" onClick={openDrawer}>
+            <Pencil />
+          </Button>
+        </DrawerTrigger>
+        <Toaster className="z-100" />
+        <DrawerContent className="h-[57.5dvh]">
+          <DrawerHeader>
+            <DrawerTitle>Edit dailyPhoto</DrawerTitle>
+            <DialogDescription>
+              Make changes to your dailyPhoto here. Click save when you&apos;re
+              done.
+            </DialogDescription>
+          </DrawerHeader>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            encType="multipart/form-data"
+            className="w-full flex flex-col justify-center items-center p-5 gap-5"
+          >
+            <div className="w-full flex flex-col gap-2">
+              <Textarea
+                placeholder="Type your note here."
+                id="note"
+                {...register('note', { required: 'Note is required' })}
+                className="resize-none w-full h-50"
+              />
+              {errors.note && (
+                <p className="text-red-500">{errors.note.message}</p>
+              )}
 
-            <Controller
-              name="date"
-              control={control}
-              render={({ field }) => {
-                return (
-                  <>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Date" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={todayISO}>Today</SelectItem>
-                        <SelectItem value={yesterdayISO}>Yesterday</SelectItem>
-                        <SelectItem value={dayBeforeYesterdayISO}>
-                          Day before yesterday
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.date && (
-                      <p className="text-red-500 mt-1">{errors.date.message}</p>
-                    )}
-                  </>
-                );
-              }}
-            />
-          </div>
+              <Controller
+                name="date"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Date" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={todayISO}>Today</SelectItem>
+                          <SelectItem value={yesterdayISO}>
+                            Yesterday
+                          </SelectItem>
+                          <SelectItem value={dayBeforeYesterdayISO}>
+                            Day before yesterday
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.date && (
+                        <p className="text-red-500 mt-1">
+                          {errors.date.message}
+                        </p>
+                      )}
+                    </>
+                  );
+                }}
+              />
+            </div>
 
-          <Button type="submit">Save changes</Button>
-        </form>
-      </DrawerContent>
-    </Drawer>
+            <Button type="submit">Save changes</Button>
+          </form>
+        </DrawerContent>
+      </Drawer>
+    </div>
   );
 }

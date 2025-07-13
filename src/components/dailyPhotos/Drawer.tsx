@@ -103,7 +103,6 @@ export default function Drawer() {
           toast.error('Error: ' + data.errors[0].message);
         }
 
-        console.log(data.updateDailyPhoto);
         toast.dismiss(toastId!);
         setToastId(null);
         toast.success('Image successfully saved!');
@@ -172,7 +171,6 @@ export default function Drawer() {
               control={control}
               rules={{ required: 'Date required!' }}
               render={({ field }) => {
-                console.log('field.value', field.value);
                 return (
                   <>
                     <Select onValueChange={field.onChange} value={field.value}>
