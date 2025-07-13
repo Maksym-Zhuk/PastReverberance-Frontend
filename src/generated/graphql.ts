@@ -31,10 +31,6 @@ export type Scalars = {
   DateTime: { input: unknown; output: unknown };
 };
 
-export type CreateDailyPhotoInput = {
-  note: Scalars['String']['input'];
-};
-
 export type CreateProfileInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   firstName: Scalars['String']['input'];
@@ -50,6 +46,10 @@ export type DailyPhoto = {
   userId: Scalars['Int']['output'];
 };
 
+export type DeleteDailyPhotoInput = {
+  id: Scalars['Int']['input'];
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -57,15 +57,21 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createDailyPhoto: DailyPhoto;
+  deleteDailyPhoto: Scalars['String']['output'];
+  getDailyPhotoByID: DailyPhoto;
   login: User;
   refreshToken: RefreshResponse;
   register: User;
   updataUser: UpdateUserResponse;
+  updateDailyPhoto: DailyPhoto;
 };
 
-export type MutationCreateDailyPhotoArgs = {
-  input: CreateDailyPhotoInput;
+export type MutationDeleteDailyPhotoArgs = {
+  input: DeleteDailyPhotoInput;
+};
+
+export type MutationGetDailyPhotoByIdArgs = {
+  input: GetDailyPhotoById;
 };
 
 export type MutationLoginArgs = {
@@ -80,6 +86,10 @@ export type MutationUpdataUserArgs = {
   input: UpdateUserInput;
 };
 
+export type MutationUpdateDailyPhotoArgs = {
+  input: UpdateDailyPhotoInput;
+};
+
 export type ProfileInfo = {
   __typename?: 'ProfileInfo';
   description: Scalars['String']['output'];
@@ -91,6 +101,7 @@ export type ProfileInfo = {
 export type Query = {
   __typename?: 'Query';
   delete: Scalars['String']['output'];
+  getDailyPhotos: Array<DailyPhoto>;
   logout: Scalars['String']['output'];
   me: User;
 };
@@ -105,6 +116,12 @@ export enum Role {
   Admin = 'ADMIN',
   User = 'USER',
 }
+
+export type UpdateDailyPhotoInput = {
+  date: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
+  note: Scalars['String']['input'];
+};
 
 export type UpdateUserInput = {
   description?: InputMaybe<Scalars['String']['input']>;
@@ -129,6 +146,10 @@ export type User = {
   role: Role;
 };
 
+export type GetDailyPhotoById = {
+  id: Scalars['Int']['input'];
+};
+
 export type RefreshResponse = {
   __typename?: 'refreshResponse';
   accessToken: Scalars['String']['output'];
@@ -150,6 +171,41 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = {
   __typename?: 'Mutation';
   register: { __typename?: 'User'; id: number };
+};
+
+export type GetDailyPhotosQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetDailyPhotosQuery = {
+  __typename?: 'Query';
+  getDailyPhotos: Array<{
+    __typename?: 'DailyPhoto';
+    id: number;
+    photoUrl: string;
+    note?: string | null;
+  }>;
+};
+
+export type UpdateDailyPhotoMutationVariables = Exact<{
+  input: UpdateDailyPhotoInput;
+}>;
+
+export type UpdateDailyPhotoMutation = {
+  __typename?: 'Mutation';
+  updateDailyPhoto: {
+    __typename?: 'DailyPhoto';
+    id: number;
+    photoUrl: string;
+    note?: string | null;
+  };
+};
+
+export type DeleteDailyPhotoMutationVariables = Exact<{
+  input: DeleteDailyPhotoInput;
+}>;
+
+export type DeleteDailyPhotoMutation = {
+  __typename?: 'Mutation';
+  deleteDailyPhoto: string;
 };
 
 export const LoginDocument = gql`
@@ -245,4 +301,183 @@ export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
+>;
+export const GetDailyPhotosDocument = gql`
+  query getDailyPhotos {
+    getDailyPhotos {
+      id
+      photoUrl
+      note
+    }
+  }
+`;
+
+/**
+ * __useGetDailyPhotosQuery__
+ *
+ * To run a query within a React component, call `useGetDailyPhotosQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDailyPhotosQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDailyPhotosQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDailyPhotosQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetDailyPhotosQuery,
+    GetDailyPhotosQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetDailyPhotosQuery, GetDailyPhotosQueryVariables>(
+    GetDailyPhotosDocument,
+    options,
+  );
+}
+export function useGetDailyPhotosLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDailyPhotosQuery,
+    GetDailyPhotosQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetDailyPhotosQuery, GetDailyPhotosQueryVariables>(
+    GetDailyPhotosDocument,
+    options,
+  );
+}
+export function useGetDailyPhotosSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        GetDailyPhotosQuery,
+        GetDailyPhotosQueryVariables
+      >,
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    GetDailyPhotosQuery,
+    GetDailyPhotosQueryVariables
+  >(GetDailyPhotosDocument, options);
+}
+export type GetDailyPhotosQueryHookResult = ReturnType<
+  typeof useGetDailyPhotosQuery
+>;
+export type GetDailyPhotosLazyQueryHookResult = ReturnType<
+  typeof useGetDailyPhotosLazyQuery
+>;
+export type GetDailyPhotosSuspenseQueryHookResult = ReturnType<
+  typeof useGetDailyPhotosSuspenseQuery
+>;
+export type GetDailyPhotosQueryResult = Apollo.QueryResult<
+  GetDailyPhotosQuery,
+  GetDailyPhotosQueryVariables
+>;
+export const UpdateDailyPhotoDocument = gql`
+  mutation updateDailyPhoto($input: UpdateDailyPhotoInput!) {
+    updateDailyPhoto(input: $input) {
+      id
+      photoUrl
+      note
+    }
+  }
+`;
+export type UpdateDailyPhotoMutationFn = Apollo.MutationFunction<
+  UpdateDailyPhotoMutation,
+  UpdateDailyPhotoMutationVariables
+>;
+
+/**
+ * __useUpdateDailyPhotoMutation__
+ *
+ * To run a mutation, you first call `useUpdateDailyPhotoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDailyPhotoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDailyPhotoMutation, { data, loading, error }] = useUpdateDailyPhotoMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateDailyPhotoMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateDailyPhotoMutation,
+    UpdateDailyPhotoMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateDailyPhotoMutation,
+    UpdateDailyPhotoMutationVariables
+  >(UpdateDailyPhotoDocument, options);
+}
+export type UpdateDailyPhotoMutationHookResult = ReturnType<
+  typeof useUpdateDailyPhotoMutation
+>;
+export type UpdateDailyPhotoMutationResult =
+  Apollo.MutationResult<UpdateDailyPhotoMutation>;
+export type UpdateDailyPhotoMutationOptions = Apollo.BaseMutationOptions<
+  UpdateDailyPhotoMutation,
+  UpdateDailyPhotoMutationVariables
+>;
+export const DeleteDailyPhotoDocument = gql`
+  mutation deleteDailyPhoto($input: DeleteDailyPhotoInput!) {
+    deleteDailyPhoto(input: $input)
+  }
+`;
+export type DeleteDailyPhotoMutationFn = Apollo.MutationFunction<
+  DeleteDailyPhotoMutation,
+  DeleteDailyPhotoMutationVariables
+>;
+
+/**
+ * __useDeleteDailyPhotoMutation__
+ *
+ * To run a mutation, you first call `useDeleteDailyPhotoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDailyPhotoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDailyPhotoMutation, { data, loading, error }] = useDeleteDailyPhotoMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteDailyPhotoMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteDailyPhotoMutation,
+    DeleteDailyPhotoMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteDailyPhotoMutation,
+    DeleteDailyPhotoMutationVariables
+  >(DeleteDailyPhotoDocument, options);
+}
+export type DeleteDailyPhotoMutationHookResult = ReturnType<
+  typeof useDeleteDailyPhotoMutation
+>;
+export type DeleteDailyPhotoMutationResult =
+  Apollo.MutationResult<DeleteDailyPhotoMutation>;
+export type DeleteDailyPhotoMutationOptions = Apollo.BaseMutationOptions<
+  DeleteDailyPhotoMutation,
+  DeleteDailyPhotoMutationVariables
 >;

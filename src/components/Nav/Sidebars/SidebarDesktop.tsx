@@ -14,7 +14,7 @@ export default function SidebarDesktop() {
 
   return (
     <LazyMotion features={domAnimation}>
-      <div className="lg:flex hidden fixed min-w-27.5 h-[100dvh] p-5 duration-300">
+      <div className="lg:flex hidden items-center sticky top-0 min-w-27.5 min-h-[100dvh] p-5 duration-300">
         <m.div
           animate={{ width: sidebarOpen ? '170px' : '70px' }}
           transition={{
