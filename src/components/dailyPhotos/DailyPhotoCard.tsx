@@ -24,7 +24,7 @@ export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
   };
 
   return (
-    <div className="min-w-[320px] p-3 bg-white flex flex-col rounded-xl">
+    <div className="w-[320px] p-3 bg-white flex flex-col justify-between rounded-xl">
       <div className="relative w-full flex justify-center aspect-video">
         <Image
           src={data.photoUrl}
@@ -34,7 +34,18 @@ export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
         />
       </div>
       <div className="flex w-full pt-4 gap-1">
-        <p className="w-4/5">{data.note}</p>
+        <div className="flex flex-col w-4/5 justify-between">
+          <p className="w-full pb-3 pl-1">{data.note}</p>
+          <Button
+            variant="outline"
+            id="date"
+            className="w-48 justify-between font-normal"
+          >
+            {data.date
+              ? new Date(data.date as string).toLocaleDateString()
+              : 'Select date'}
+          </Button>
+        </div>
         <div className="w-2/10 flex flex-col justify-end items-end gap-3">
           <UpdateDailyPhotoDialog data={data} />
           <UpdateDailyPhotoDrawer data={data} />

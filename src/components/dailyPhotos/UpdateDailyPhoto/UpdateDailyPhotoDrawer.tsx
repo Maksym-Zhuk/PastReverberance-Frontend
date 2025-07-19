@@ -55,7 +55,7 @@ export default function UpdateDailyPhotoDrawer({ data }: { data: DailyPhoto }) {
   } = useForm<FormValues>({
     defaultValues: {
       note: data.note as string,
-      date: data.createdAt as string,
+      date: data.date as string,
     },
   });
 
@@ -63,7 +63,7 @@ export default function UpdateDailyPhotoDrawer({ data }: { data: DailyPhoto }) {
     if (open && data) {
       reset({
         note: data.note ?? '',
-        date: data.createdAt as string,
+        date: data.date as string,
         id: data.id,
       });
     }

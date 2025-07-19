@@ -6,13 +6,13 @@ export const GETDAILYPHOTO = gql`
       id
       photoUrl
       note
-      createdAt
+      date
     }
   }
 `;
 
 export const GETDAILYPHOTOBYID = gql`
-  mutation getDailyPhotoByID($input: GetDailyPhotoById!) {
+  mutation getDailyPhotoByID($input: getDailyPhotoByID!) {
     getDailyPhotoByID(input: $input) {
       id
       photoUrl

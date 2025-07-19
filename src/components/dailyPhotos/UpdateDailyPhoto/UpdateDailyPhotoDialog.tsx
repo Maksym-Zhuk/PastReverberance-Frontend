@@ -39,6 +39,8 @@ export default function UpdateDailyPhotoDialog({ data }: { data: DailyPhoto }) {
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayISO = yesterday.toISOString();
 
+  console.log(yesterdayISO);
+
   const dayBeforeYesterday = new Date(today);
   dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
   const dayBeforeYesterdayISO = dayBeforeYesterday.toISOString();
@@ -57,21 +59,25 @@ export default function UpdateDailyPhotoDialog({ data }: { data: DailyPhoto }) {
   } = useForm<FormValues>({
     defaultValues: {
       note: data.note as string,
-      date: data.createdAt as string,
+      date: data.date as string,
     },
   });
 
   useEffect(() => {
     if (open && data) {
+      console.log(data.date);
+
       reset({
         note: data.note ?? '',
-        date: data.createdAt as string,
+        date: data.date as string,
         id: data.id,
       });
     }
   }, [open, data, reset]);
 
   const onSubmit = async (dataForm: FormValues) => {
+    console.log(dataForm.date);
+
     updateDailyPhoto({
       variables: {
         input: {
