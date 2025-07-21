@@ -121,3 +121,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+@theme {
+  --animate-fade-loop: fade-loop 2s ease-in-out 1;
+
+  @keyframes fade-loop {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.3;
+    }
+  }
+}

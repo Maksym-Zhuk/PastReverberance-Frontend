@@ -33,8 +33,8 @@ export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
           className="object-cover rounded-lg"
         />
       </div>
-      <div className="flex w-full pt-4 gap-1">
-        <div className="flex flex-col w-4/5 justify-between">
+      <div className="flex w-full h-full pt-4 gap-1">
+        <div className="flex flex-col w-4/5 h-full justify-between">
           <p className="w-full pb-3 pl-1">{data.note}</p>
           <Button
             variant="outline"
