@@ -1,6 +1,6 @@
 'use client';
-import { Trash2 } from 'lucide-react';
-import Image from 'next/image';
+import { Clock, Trash2 } from 'lucide-react';
+import { memo } from 'react';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -13,31 +13,40 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useDeleteDailyPhoto } from '@/hooks/useDailyPhotos';
 import { errorMessage } from '@/lib/api';
-import { formatDate } from '@/lib/date';
+import { formatDate, formatTime } from '@/lib/date';
 import type { DailyPhoto } from '@/types/api';
 import EditPhoto from './EditPhoto';
+import PhotoPreview from './PhotoPreview';
 
-export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
+function DailyPhotoCard({
+  data,
+  priority,
+}: {
+  data: DailyPhoto;
+  priority?: boolean;
+}) {
   const deletePhoto = useDeleteDailyPhoto();
+  const time = formatTime(data.date);
 
   return (
     <article className="bg-card text-card-foreground flex flex-col gap-3 rounded-xl border p-3 shadow-xs">
-      <div className="bg-muted relative aspect-video w-full overflow-hidden rounded-lg">
-        <Image
-          src={data.photoUrl}
-          alt="Daily photo"
-          fill
-          sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 100vw"
-          className="object-cover"
-        />
-      </div>
-      <div className="flex items-start justify-between gap-2">
+      <PhotoPreview data={data} priority={priority} />
+      <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <time className="text-muted-foreground text-xs font-medium">
+          <time
+            dateTime={data.date}
+            className="flex items-center gap-2 text-sm font-medium"
+          >
             {formatDate(data.date)}
+            {time && (
+              <span className="text-muted-foreground flex items-center gap-1 font-normal">
+                <Clock className="size-3.5" />
+                {time}
+              </span>
+            )}
           </time>
           {data.note && <p className="mt-1 text-sm break-words">{data.note}</p>}
         </div>
@@ -65,6 +74,7 @@ export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
+                  className={buttonVariants({ variant: 'destructive' })}
                   onClick={() =>
                     deletePhoto.mutate(data.id, {
                       onError: (err) => toast.error(errorMessage(err)),
@@ -81,3 +91,6 @@ export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
     </article>
   );
 }
+
+// refetches keep object identity for unchanged photos, so most cards skip rendering
+export default memo(DailyPhotoCard);

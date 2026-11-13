@@ -13,7 +13,11 @@ import {
 } from '@/components/ui/dialog';
 import { useCreateDailyPhoto } from '@/hooks/useDailyPhotos';
 import { errorMessage } from '@/lib/api';
-import DailyPhotoForm from './DailyPhotoForm';
+import dynamic from 'next/dynamic';
+
+// pulls in the date picker + select only when a dialog is opened
+const loadForm = () => import('./DailyPhotoForm');
+const DailyPhotoForm = dynamic(loadForm);
 
 // floating button, sits above the mobile nav and in the corner on desktop
 export default function AddPhoto() {
@@ -26,6 +30,7 @@ export default function AddPhoto() {
         <Button
           size="icon"
           aria-label="Add photo"
+          onPointerEnter={loadForm}
           className="fixed right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-30 size-14 rounded-full shadow-lg lg:right-8 lg:bottom-8"
         >
           <Plus className="size-6" />
@@ -35,7 +40,7 @@ export default function AddPhoto() {
         <DialogHeader>
           <DialogTitle>Add today&apos;s photo</DialogTitle>
           <DialogDescription>
-            Pick a photo, add a note and choose the day it belongs to.
+            Drop a photo, add a note and choose when it was taken.
           </DialogDescription>
         </DialogHeader>
         <DailyPhotoForm

@@ -1,5 +1,5 @@
 import type { Menu } from '@/types/menu';
-import { Calendar, CalendarSync, Settings, User2 } from 'lucide-react';
+import { Calendar, CalendarSync, User2 } from 'lucide-react';
 
 export const mobileMenu: Menu[] = [
   {
@@ -19,12 +19,6 @@ export const mobileMenu: Menu[] = [
     name: 'Profile',
     link: '/profile',
     icon: User2,
-  },
-  {
-    id: 4,
-    name: 'Settings',
-    link: '/settings',
-    icon: Settings,
   },
 ];
 
@@ -49,11 +43,5 @@ export const desktopDownMenu: Menu[] = [
     name: 'Profile',
     link: '/profile',
     icon: User2,
-  },
-  {
-    id: 2,
-    name: 'Settings',
-    link: '/settings',
-    icon: Settings,
   },
 ];

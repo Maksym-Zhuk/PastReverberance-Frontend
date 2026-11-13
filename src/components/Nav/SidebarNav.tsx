@@ -1,8 +1,34 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { m } from 'framer-motion';
+import type { ReactNode } from 'react';
 import { Menu } from '@/types/menu';
+
+// shared look for every sidebar row: icon stays fixed at the left, label fades in
+export const navItemClass = (active = false) =>
+  `flex h-10 w-full items-center gap-3 overflow-hidden rounded-lg px-2.5 text-sm font-medium transition-colors ${
+    active
+      ? 'bg-primary text-primary-foreground'
+      : 'text-foreground hover:bg-accent'
+  }`;
+
+export function NavLabel({
+  open,
+  children,
+}: {
+  open: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <span
+      className={`whitespace-nowrap transition-opacity duration-200 ${
+        open ? 'opacity-100 delay-100' : 'opacity-0'
+      }`}
+    >
+      {children}
+    </span>
+  );
+}
 
 interface Props {
   menu: Menu[];
@@ -13,7 +39,7 @@ export default function SidebarNav({ menu, sidebarOpen }: Props) {
   const pathname = usePathname();
 
   return (
-    <div className="mt-6 w-full space-y-1 px-1">
+    <div className="flex w-full flex-col gap-1">
       {menu.map((item: Menu) => {
         const active = pathname === item.link;
         return (
@@ -22,24 +48,10 @@ export default function SidebarNav({ menu, sidebarOpen }: Props) {
             key={item.id}
             aria-label={item.name}
             aria-current={active ? 'page' : undefined}
-            className={`flex h-14 w-full cursor-pointer items-center justify-center rounded-xl p-4 transition-colors ${
-              active
-                ? 'bg-primary text-primary-foreground'
-                : 'text-foreground hover:bg-accent'
-            }`}
+            className={navItemClass(active)}
           >
-            <item.icon size={28} className="shrink-0" />
-            <m.span
-              initial={false}
-              animate={{
-                opacity: sidebarOpen ? 1 : 0,
-                width: sidebarOpen ? '100%' : '0%',
-              }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="relative left-1 flex items-center overflow-hidden whitespace-nowrap"
-            >
-              {item.name}
-            </m.span>
+            <item.icon size={20} className="shrink-0" />
+            <NavLabel open={sidebarOpen}>{item.name}</NavLabel>
           </Link>
         );
       })}

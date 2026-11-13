@@ -4,7 +4,7 @@ import { useDailyPhotos } from '@/hooks/useDailyPhotos';
 import DailyPhotoCard from './DailyPhotoCard';
 
 const grid =
-  'grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:p-6 xl:grid-cols-3 2xl:grid-cols-4';
+  'grid grid-cols-1 items-start gap-4 p-4 pb-24 sm:grid-cols-2 lg:p-6 lg:pb-24 xl:grid-cols-3 2xl:grid-cols-4';
 
 export default function DailyPhotos() {
   const { data, isLoading, error } = useDailyPhotos();
@@ -39,8 +39,8 @@ export default function DailyPhotos() {
 
   return (
     <div className={grid}>
-      {data.map((photo) => (
-        <DailyPhotoCard key={photo.id} data={photo} />
+      {data.map((photo, i) => (
+        <DailyPhotoCard key={photo.id} data={photo} priority={i < 4} />
       ))}
     </div>
   );

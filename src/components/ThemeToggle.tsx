@@ -31,23 +31,30 @@ const options: { value: Theme; label: string; icon: typeof Sun }[] = [
   { value: 'system', label: 'System', icon: Monitor },
 ];
 
-// full 3-way chooser for the settings page
+// full 3-way chooser for the profile page (segmented control)
 export function ThemeSelect() {
   const { theme, setTheme } = useTheme();
   return (
-    <div role="radiogroup" aria-label="Theme" className="flex gap-2">
+    <div
+      role="radiogroup"
+      aria-label="Theme"
+      className="bg-muted grid grid-cols-3 gap-1 rounded-lg p-1"
+    >
       {options.map(({ value, label, icon: Icon }) => (
-        <Button
+        <button
           key={value}
           type="button"
           role="radio"
           aria-checked={theme === value}
-          variant={theme === value ? 'default' : 'outline'}
           onClick={() => setTheme(value)}
-          className="flex-1"
+          className={`flex items-center justify-center gap-2 rounded-md py-2 text-sm font-medium transition-colors ${
+            theme === value
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
         >
-          <Icon /> {label}
-        </Button>
+          <Icon className="size-4" /> {label}
+        </button>
       ))}
     </div>
   );

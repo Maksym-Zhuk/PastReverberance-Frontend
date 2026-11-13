@@ -7,7 +7,11 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
     () =>
       new QueryClient({
         defaultOptions: {
-          queries: { retry: false, refetchOnWindowFocus: true },
+          queries: {
+            retry: false,
+            refetchOnWindowFocus: true,
+            staleTime: 60_000,
+          },
         },
       }),
   );

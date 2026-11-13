@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithQuery, stubFetch } from '@/test/utils';
@@ -10,6 +10,7 @@ const open = async () => {
   renderWithQuery(<AddPhoto />);
   await userEvent.click(screen.getByRole('button', { name: 'Add photo' }));
   await screen.findByText("Add today's photo");
+  await screen.findByLabelText('Photo', {}, { timeout: 5000 }); // lazy chunk, slow on a cold import
 };
 
 describe('Add photo dialog', () => {
@@ -40,9 +41,6 @@ describe('Add photo dialog', () => {
       new File(['img'], 'a.png', { type: 'image/png' }),
     );
     await userEvent.type(screen.getByLabelText('Note'), 'my note');
-    fireEvent.change(screen.getByLabelText('Date'), {
-      target: { value: '2026-01-02' },
-    });
     await userEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
     await waitFor(() =>
@@ -57,6 +55,9 @@ describe('Add photo dialog', () => {
     const form = init.body as FormData;
     expect((form.get('file') as File).name).toBe('a.png');
     expect(form.get('note')).toBe('my note');
-    expect(form.get('date')).toBe('2026-01-02');
+    // defaults to "now", sent as an ISO instant
+    expect(new Date(form.get('date') as string).toISOString()).toBe(
+      form.get('date'),
+    );
   });
 });

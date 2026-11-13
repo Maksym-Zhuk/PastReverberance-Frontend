@@ -13,8 +13,13 @@ import {
 } from '@/components/ui/dialog';
 import { useUpdateDailyPhoto } from '@/hooks/useDailyPhotos';
 import { errorMessage } from '@/lib/api';
+import { parseDate } from '@/lib/date';
 import type { DailyPhoto } from '@/types/api';
-import DailyPhotoForm from './DailyPhotoForm';
+import dynamic from 'next/dynamic';
+
+// pulls in the date picker + select only when a dialog is opened
+const loadForm = () => import('./DailyPhotoForm');
+const DailyPhotoForm = dynamic(loadForm);
 
 export default function EditPhoto({ data }: { data: DailyPhoto }) {
   const [open, setOpen] = useState(false);
@@ -23,26 +28,34 @@ export default function EditPhoto({ data }: { data: DailyPhoto }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Edit photo">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Edit photo"
+          onPointerEnter={loadForm}
+        >
           <Pencil />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit photo</DialogTitle>
-          <DialogDescription>Change the note or the date.</DialogDescription>
+          <DialogDescription>
+            Change the photo, the note or the date.
+          </DialogDescription>
         </DialogHeader>
         <DailyPhotoForm
           mode="edit"
+          currentPhotoUrl={data.photoUrl}
           defaultValues={{
             note: data.note ?? '',
-            date: data.date.slice(0, 10),
+            date: parseDate(data.date),
           }}
           pending={update.isPending}
           onCancel={() => setOpen(false)}
-          onSubmit={async ({ note, date }) => {
+          onSubmit={async ({ file, note, date }) => {
             try {
-              await update.mutateAsync({ id: data.id, note, date });
+              await update.mutateAsync({ id: data.id, note, date, file });
               setOpen(false);
             } catch (err) {
               toast.error(errorMessage(err));

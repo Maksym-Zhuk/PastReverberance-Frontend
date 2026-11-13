@@ -1,42 +1,59 @@
 'use client';
 import { desktopDownMenu, desktopMenu } from '@/constants/menu';
-import { domAnimation, LazyMotion, m } from 'framer-motion';
-import { PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
+import { Moon, PanelRightClose, PanelRightOpen, Sun } from 'lucide-react';
 import { useState } from 'react';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import SidebarNav from '../SidebarNav';
+import SidebarNav, { NavLabel, navItemClass } from '../SidebarNav';
+
+// 58 = 40px item + 2*8px padding + 2px border, so icons sit centered when collapsed
+const COLLAPSED = 58;
+const EXPANDED = 200;
 
 export default function SidebarDesktop() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { setTheme } = useTheme();
   const Toggle = sidebarOpen ? PanelRightOpen : PanelRightClose;
 
   return (
-    <LazyMotion features={domAnimation}>
-      <aside className="sticky top-0 hidden h-[100dvh] shrink-0 p-5 lg:flex">
-        <m.nav
-          aria-label="Main"
-          animate={{ width: sidebarOpen ? 170 : 70 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 50 }}
-          className="bg-card flex h-full flex-col items-stretch justify-between overflow-hidden rounded-2xl border pb-1 shadow-lg"
-        >
-          <div className="flex flex-col">
-            <button
-              type="button"
-              onClick={() => setSidebarOpen((o) => !o)}
-              aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-              aria-expanded={sidebarOpen}
-              className="text-foreground hover:bg-accent mt-4 mr-3 ml-auto flex size-10 items-center justify-center rounded-lg"
-            >
-              <Toggle />
-            </button>
-            <SidebarNav menu={desktopMenu} sidebarOpen={sidebarOpen} />
-          </div>
-          <div className="flex flex-col items-center">
-            <ThemeToggle className="mb-2" />
-            <SidebarNav menu={desktopDownMenu} sidebarOpen={sidebarOpen} />
-          </div>
-        </m.nav>
-      </aside>
-    </LazyMotion>
+    <aside className="sticky top-0 hidden h-[100dvh] shrink-0 p-3 lg:flex">
+      <nav
+        aria-label="Main"
+        style={{ width: sidebarOpen ? EXPANDED : COLLAPSED }}
+        className="bg-card flex h-full flex-col justify-between overflow-hidden rounded-xl border p-2 shadow-lg transition-[width] duration-300 ease-out"
+      >
+        <div className="flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen((o) => !o)}
+            aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            aria-expanded={sidebarOpen}
+            className={navItemClass()}
+          >
+            <Toggle size={20} className="shrink-0" />
+            <NavLabel open={sidebarOpen}>Collapse</NavLabel>
+          </button>
+          <SidebarNav menu={desktopMenu} sidebarOpen={sidebarOpen} />
+        </div>
+        <div className="flex flex-col gap-1">
+          <button
+            type="button"
+            onClick={() =>
+              setTheme(
+                document.documentElement.classList.contains('dark')
+                  ? 'light'
+                  : 'dark',
+              )
+            }
+            aria-label="Toggle theme"
+            className={navItemClass()}
+          >
+            <Sun size={20} className="hidden shrink-0 dark:block" />
+            <Moon size={20} className="shrink-0 dark:hidden" />
+            <NavLabel open={sidebarOpen}>Theme</NavLabel>
+          </button>
+          <SidebarNav menu={desktopDownMenu} sidebarOpen={sidebarOpen} />
+        </div>
+      </nav>
+    </aside>
   );
 }
