@@ -1,31 +1,14 @@
 'use client';
-<<<<<<< Updated upstream
-import { DailyPhoto } from '@/generated/graphql';
-import { GETDAILYPHOTO } from '@/graphql/dailyPhoto';
-import { useQuery } from '@apollo/client';
-=======
 import { ImagePlus } from 'lucide-react';
 import { useDailyPhotos } from '@/hooks/useDailyPhotos';
->>>>>>> Stashed changes
 import DailyPhotoCard from './DailyPhotoCard';
 
 const grid =
   'grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:p-6 xl:grid-cols-3 2xl:grid-cols-4';
 
 export default function DailyPhotos() {
-  const { data, loading, error } = useQuery(GETDAILYPHOTO, {
-    pollInterval: 5000,
-  });
+  const { data, isLoading, error } = useDailyPhotos();
 
-<<<<<<< Updated upstream
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  return (
-    <div className="w-full flex flex-wrap justify-center gap-4 py-5">
-      {data.getDailyPhotos.map((dailyPhoto: DailyPhoto) => (
-        <DailyPhotoCard key={dailyPhoto.id} data={dailyPhoto} />
-=======
   if (isLoading)
     return (
       <div className={grid} aria-busy="true" aria-label="Loading photos">
@@ -58,7 +41,6 @@ export default function DailyPhotos() {
     <div className={grid}>
       {data.map((photo) => (
         <DailyPhotoCard key={photo.id} data={photo} />
->>>>>>> Stashed changes
       ))}
     </div>
   );

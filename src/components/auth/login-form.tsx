@@ -13,9 +13,7 @@ import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation } from '@apollo/client';
-import { LOGIN } from '@/graphql/auth';
-import { useEffect } from 'react';
+import { useLogin } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { EMAIL_RE, FieldError } from './field-error';
 
@@ -33,24 +31,6 @@ export function LoginForm({
     handleSubmit,
     reset,
     formState: { errors },
-<<<<<<< Updated upstream
-  } = useForm<Input>({
-    mode: 'onChange',
-  });
-  const [login, { data }] = useMutation(LOGIN);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (data) router.push('/');
-  }, [data, router]);
-
-  const onSubmit: SubmitHandler<Input> = (data) => {
-    login({
-      variables: {
-        input: {
-          email: data.email,
-          password: data.password,
-=======
   } = useForm<FormInput>({ mode: 'onTouched' });
   const login = useLogin();
   const router = useRouter();
@@ -63,11 +43,9 @@ export function LoginForm({
           reset();
           router.push('/');
           router.refresh();
->>>>>>> Stashed changes
         },
       },
-    });
-    reset();
+    );
   };
 
   return (
@@ -119,13 +97,6 @@ export function LoginForm({
                   message={errors.password?.message}
                 />
               </div>
-<<<<<<< Updated upstream
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-              </div>
-=======
               {login.error && (
                 <div role="alert" className="text-destructive text-sm">
                   {login.error.message}
@@ -138,7 +109,6 @@ export function LoginForm({
               >
                 {login.isPending ? 'Signing in…' : 'Login'}
               </Button>
->>>>>>> Stashed changes
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{' '}

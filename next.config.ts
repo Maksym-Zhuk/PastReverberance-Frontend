@@ -6,13 +6,8 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-<<<<<<< Updated upstream
-        source: '/graphql',
-        destination: process.env.NEXT_PUBLIC_API_URL!,
-=======
         source: '/api/:path*',
         destination: `${API_URL}/:path*`,
->>>>>>> Stashed changes
       },
     ];
   },

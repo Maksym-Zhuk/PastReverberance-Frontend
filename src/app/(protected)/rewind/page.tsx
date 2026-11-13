@@ -1,16 +1,9 @@
 'use client';
 import DailyPhotoCircle from '@/components/rewind/DailyPhotoCircle';
 import { Button } from '@/components/ui/button';
-<<<<<<< Updated upstream
-import { DailyPhoto } from '@/generated/graphql';
-import { GETDAILYPHOTO } from '@/graphql/dailyPhoto';
-import { useQuery } from '@apollo/client';
-import { Expand, Maximize, Pause, Play, Settings } from 'lucide-react';
-=======
 import { useDailyPhotos } from '@/hooks/useDailyPhotos';
 import { formatDate } from '@/lib/date';
 import { ImagePlus, Maximize, Minimize, Pause, Play } from 'lucide-react';
->>>>>>> Stashed changes
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
@@ -19,20 +12,10 @@ const SLIDE_MS = 3000;
 const DOT = 20; // px, keeps the progress bar aligned with the dot centers
 
 export default function RewindPage() {
-<<<<<<< Updated upstream
-  const { data, loading, error } = useQuery(GETDAILYPHOTO);
-  const [dailyPhotoUrl, setDailyPhotoUrl] = useState<string>('');
-  const [fillLine, setFillLine] = useState<number>(0);
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [fullScreen, setFullScreen] = useState<boolean>(false);
-  const [isPlay, setIsPlay] = useState<boolean>(false);
-  const [fadeIn, setFadeIn] = useState<boolean>(true);
-=======
   const { data, isLoading, error } = useDailyPhotos();
   const [index, setIndex] = useState(0);
   const [isPlay, setIsPlay] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
->>>>>>> Stashed changes
 
   // API returns newest first; a rewind plays oldest -> newest
   const photos = useMemo(() => [...(data ?? [])].reverse(), [data]);
@@ -41,18 +24,6 @@ export default function RewindPage() {
   const photo = photos[safeIndex];
 
   useEffect(() => {
-<<<<<<< Updated upstream
-    if (data) {
-      setDailyPhotoUrl(data.getDailyPhotos[0].photoUrl);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (!data || !lineRef.current || circleRefs.current.length === 0) return;
-
-    const index = data.getDailyPhotos.findIndex(
-      (photo: DailyPhoto) => photo.photoUrl === dailyPhotoUrl,
-=======
     if (!isPlay || count < 2) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % count), SLIDE_MS);
     return () => clearInterval(id);
@@ -85,51 +56,9 @@ export default function RewindPage() {
           <Link href="/">Add your first photo</Link>
         </Button>
       </div>
->>>>>>> Stashed changes
     );
 
-<<<<<<< Updated upstream
-    const targetEl = circleRefs.current[index];
-    if (!targetEl) return;
-
-    const containerRect = lineRef.current.getBoundingClientRect();
-    const targetRect = targetEl.getBoundingClientRect();
-
-    const distance =
-      targetRect.left - containerRect.left + targetEl.offsetWidth / 2;
-    const percent = (distance / lineRef.current.offsetWidth) * 100;
-
-    setFillLine(percent);
-  }, [dailyPhotoUrl, data]);
-
-  useEffect(() => {
-    if (isPlay && data) {
-      intervalRef.current = setInterval(() => {
-        setFadeIn(false);
-
-        setTimeout(() => {
-          setActiveIndex((prevIndex) => {
-            const nextIndex = (prevIndex + 1) % data.getDailyPhotos.length;
-            setDailyPhotoUrl(data.getDailyPhotos[nextIndex].photoUrl);
-            return nextIndex;
-          });
-          setFadeIn(true);
-        }, 500);
-      }, 3000);
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isPlay, data]);
-
-  if (loading && !dailyPhotoUrl) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-=======
   const progress = count > 1 ? safeIndex / (count - 1) : 1;
->>>>>>> Stashed changes
 
   return (
     <div
@@ -169,29 +98,6 @@ export default function RewindPage() {
         </div>
       </div>
 
-<<<<<<< Updated upstream
-      <div
-        className={`w-full ${fullScreen ? 'h-[7dvh]' : 'h-[10dvh]'} absolute bottom-0 flex justify-center items-center gap-5 px-3 duration-500 ${fullScreen ? 'opacity-0' : 'opacity-100'} hover:opacity-100`}
-      >
-        <div
-          ref={lineRef}
-          className="relative w-[90%] h-2 bg-white rounded-2xl flex justify-between items-center"
-        >
-          <div
-            className="absolute bg-black h-2 rounded-2xl transition-all duration-500"
-            style={{ width: `${fillLine}%` }}
-          ></div>
-
-          {data.getDailyPhotos.map((dailyPhoto: DailyPhoto, index: number) => {
-            return (
-              <div
-                key={dailyPhoto.id}
-                ref={(el) => {
-                  circleRefs.current[index] = el;
-                }}
-                className="z-10 flex justify-center items-center"
-              >
-=======
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1 overflow-x-auto py-2">
           <div className="relative flex w-max min-w-full items-center justify-between gap-3">
@@ -204,7 +110,6 @@ export default function RewindPage() {
             />
             {photos.map((p, i) => (
               <div key={p.id} className="relative z-10">
->>>>>>> Stashed changes
                 <DailyPhotoCircle
                   data={p}
                   reached={i <= safeIndex}

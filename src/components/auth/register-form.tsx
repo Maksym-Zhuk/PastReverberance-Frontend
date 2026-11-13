@@ -13,9 +13,7 @@ import { Label } from '@/components/ui/label';
 import { PasswordInput } from '@/components/ui/password-input';
 import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation } from '@apollo/client';
-import { useEffect } from 'react';
-import { REGISTER } from '@/graphql/auth';
+import { useRegister } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { EMAIL_RE, FieldError } from './field-error';
 
@@ -44,32 +42,6 @@ export function RegisterForm({
     handleSubmit,
     reset,
     formState: { errors },
-<<<<<<< Updated upstream
-  } = useForm<Input>({
-    mode: 'onChange',
-  });
-  const [login, { data }] = useMutation(REGISTER);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (data) router.push('/');
-  }, [data, router]);
-
-  const onSubmit: SubmitHandler<Input> = (data) => {
-    login({
-      variables: {
-        input: {
-          email: data.email,
-          password: data.password,
-          profile: {
-            firstName: data.profile.firstName,
-            lastName: data.profile.lastName,
-          },
-        },
-      },
-    });
-    reset();
-=======
   } = useForm<FormInput>({ mode: 'onTouched' });
   const registerUser = useRegister();
   const router = useRouter();
@@ -92,7 +64,6 @@ export function RegisterForm({
         },
       },
     );
->>>>>>> Stashed changes
   };
 
   return (
@@ -186,13 +157,6 @@ export function RegisterForm({
                   message={errors.password?.message}
                 />
               </div>
-<<<<<<< Updated upstream
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Register
-                </Button>
-              </div>
-=======
               {registerUser.error && (
                 <div role="alert" className="text-destructive text-sm">
                   {registerUser.error.message}
@@ -205,7 +169,6 @@ export function RegisterForm({
               >
                 {registerUser.isPending ? 'Creating account…' : 'Register'}
               </Button>
->>>>>>> Stashed changes
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{' '}

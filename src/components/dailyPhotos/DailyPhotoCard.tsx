@@ -1,29 +1,4 @@
 'use client';
-<<<<<<< Updated upstream
-import { DailyPhoto } from '@/generated/graphql';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
-import { useMutation } from '@apollo/client';
-import { DELETEDAILYPHOTO, GETDAILYPHOTO } from '@/graphql/dailyPhoto';
-import UpdateDailyPhotoDialog from './UpdateDailyPhoto/UpdateDailyPhotoDialog';
-import UpdateDailyPhotoDrawer from './UpdateDailyPhoto/UpdateDailyPhotoDrawer';
-
-export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
-  const [deleteDailyPhoto] = useMutation(DELETEDAILYPHOTO, {
-    refetchQueries: [{ query: GETDAILYPHOTO }],
-  });
-
-  const handleDelete = () => {
-    deleteDailyPhoto({
-      variables: {
-        input: {
-          id: data.id,
-        },
-      },
-    });
-  };
-=======
 import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
@@ -47,7 +22,6 @@ import EditPhoto from './EditPhoto';
 
 export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
   const deletePhoto = useDeleteDailyPhoto();
->>>>>>> Stashed changes
 
   return (
     <article className="bg-card text-card-foreground flex flex-col gap-3 rounded-xl border p-3 shadow-xs">
@@ -67,18 +41,6 @@ export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
           </time>
           {data.note && <p className="mt-1 text-sm break-words">{data.note}</p>}
         </div>
-<<<<<<< Updated upstream
-        <div className="w-2/10 flex flex-col justify-end items-end gap-3">
-          <UpdateDailyPhotoDialog data={data} />
-          <UpdateDailyPhotoDrawer data={data} />
-          <Button
-            variant={'destructive'}
-            className="cursor-pointer"
-            onClick={handleDelete}
-          >
-            <Trash2 />
-          </Button>
-=======
         <div className="flex shrink-0 gap-1">
           <EditPhoto data={data} />
           <AlertDialog>
@@ -114,7 +76,6 @@ export default function DailyPhotoCard({ data }: { data: DailyPhoto }) {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
->>>>>>> Stashed changes
         </div>
       </div>
     </article>

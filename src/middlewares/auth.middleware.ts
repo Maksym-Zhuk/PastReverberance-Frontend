@@ -13,43 +13,6 @@ export default async function authMiddleware(req: NextRequest) {
   // access token missing/expired: try to renew it with the refresh token
   if (!refreshToken) return toLogin(req);
 
-<<<<<<< Updated upstream
-  if (!decodedToken) {
-    const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: `refreshToken=${refreshToken}`,
-      },
-      body: JSON.stringify({
-        query: `
-            mutation{
-              refreshToken {
-                  accessToken
-              }
-            }
-          `,
-      }),
-    });
-    if (refreshResponse.ok) {
-      const result = await refreshResponse.json();
-
-      if (!result.data)
-        return NextResponse.redirect(new URL('/auth/login', req.url));
-
-      const accessToken = result.data.refreshToken.accessToken;
-      const res = NextResponse.next();
-      res.cookies.set('accessToken', accessToken, {
-        httpOnly: true,
-        path: '/',
-        sameSite: 'lax',
-      });
-      return res;
-    } else {
-      return NextResponse.redirect(new URL('/auth/login', req.url));
-    }
-  }
-=======
   const refreshResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080'}/auth/refresh`,
     { method: 'POST', headers: { Cookie: `refreshToken=${refreshToken}` } },
@@ -68,5 +31,4 @@ export default async function authMiddleware(req: NextRequest) {
     maxAge: 24 * 60 * 60,
   });
   return res;
->>>>>>> Stashed changes
 }

@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
-'use state';
-import { DailyPhoto } from '@/generated/graphql';
-=======
 'use client';
 import type { DailyPhoto } from '@/types/api';
->>>>>>> Stashed changes
 import {
   HoverCard,
   HoverCardContent,
