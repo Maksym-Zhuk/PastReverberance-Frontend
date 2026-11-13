@@ -3,44 +3,40 @@ import { desktopDownMenu, desktopMenu } from '@/constants/menu';
 import { domAnimation, LazyMotion, m } from 'framer-motion';
 import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useState } from 'react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import SidebarNav from '../SidebarNav';
 
 export default function SidebarDesktop() {
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-
-  const handlerOpenSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const Toggle = sidebarOpen ? PanelRightOpen : PanelRightClose;
 
   return (
     <LazyMotion features={domAnimation}>
-      <div className="lg:flex hidden items-center sticky top-0 min-w-27.5 min-h-[100dvh] p-5 duration-300">
-        <m.div
-          animate={{ width: sidebarOpen ? '170px' : '70px' }}
-          transition={{
-            type: 'spring',
-            stiffness: 300,
-            damping: 50,
-          }}
-          className={`w-full h-full bg-white border rounded-2xl shadow-lg flex flex-col justify-between ${sidebarOpen ? 'items-start' : 'items-center'} pb-1`}
+      <aside className="sticky top-0 hidden h-[100dvh] shrink-0 p-5 lg:flex">
+        <m.nav
+          aria-label="Main"
+          animate={{ width: sidebarOpen ? 170 : 70 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 50 }}
+          className="bg-card flex h-full flex-col items-stretch justify-between overflow-hidden rounded-2xl border pb-1 shadow-lg"
         >
-          <div className="w-full flex justify-end p-5">
-            {sidebarOpen ? (
-              <PanelRightOpen
-                className="text-black cursor-pointer"
-                onClick={() => handlerOpenSidebar()}
-              />
-            ) : (
-              <PanelRightClose
-                className="text-black cursor-pointer"
-                onClick={() => handlerOpenSidebar()}
-              />
-            )}
+          <div className="flex flex-col">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen((o) => !o)}
+              aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+              aria-expanded={sidebarOpen}
+              className="text-foreground hover:bg-accent mt-4 mr-3 ml-auto flex size-10 items-center justify-center rounded-lg"
+            >
+              <Toggle />
+            </button>
+            <SidebarNav menu={desktopMenu} sidebarOpen={sidebarOpen} />
           </div>
-          <SidebarNav menu={desktopMenu} sidebarOpen={sidebarOpen} />
-          <SidebarNav menu={desktopDownMenu} sidebarOpen={sidebarOpen} />
-        </m.div>
-      </div>
+          <div className="flex flex-col items-center">
+            <ThemeToggle className="mb-2" />
+            <SidebarNav menu={desktopDownMenu} sidebarOpen={sidebarOpen} />
+          </div>
+        </m.nav>
+      </aside>
     </LazyMotion>
   );
 }

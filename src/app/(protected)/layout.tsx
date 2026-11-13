@@ -7,14 +7,12 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="w-full min-h-[100dvh] flex justify-center">
-      <div className="w-full max-w-412.5 min-h-[100dvh] flex flex-col-reverse lg:flex-row bg-[#e9e9e9]">
-        <div>
-          <SidebarDesktop />
-          <SidebarMobile />
-        </div>
+    <div className="bg-background text-foreground mx-auto flex min-h-[100dvh] w-full max-w-[1650px] lg:flex-row">
+      <SidebarDesktop />
+      <main className="min-w-0 flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0">
         {children}
-      </div>
+      </main>
+      <SidebarMobile />
     </div>
   );
 }

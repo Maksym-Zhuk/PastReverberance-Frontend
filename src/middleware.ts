@@ -12,6 +12,7 @@ export default async function middleware(req: NextRequest) {
   return authMiddleware(req);
 }
 
+// every page except the API proxy, Next internals and files with an extension
 export const config = {
-  matcher: ['/', '/auth/:path*'],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\..*).*)'],
 };

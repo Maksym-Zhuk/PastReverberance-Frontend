@@ -10,14 +10,16 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '@/graphql/auth';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { EMAIL_RE, FieldError } from './field-error';
 
-type Input = {
+type FormInput = {
   email: string;
   password: string;
 };
@@ -31,6 +33,7 @@ export function LoginForm({
     handleSubmit,
     reset,
     formState: { errors },
+<<<<<<< Updated upstream
   } = useForm<Input>({
     mode: 'onChange',
   });
@@ -47,6 +50,20 @@ export function LoginForm({
         input: {
           email: data.email,
           password: data.password,
+=======
+  } = useForm<FormInput>({ mode: 'onTouched' });
+  const login = useLogin();
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<FormInput> = (data) => {
+    login.mutate(
+      { email: data.email.trim(), password: data.password },
+      {
+        onSuccess: () => {
+          reset();
+          router.push('/');
+          router.refresh();
+>>>>>>> Stashed changes
         },
       },
     });
@@ -63,63 +80,65 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="m@example.com"
-                  required
+                  aria-required
+                  aria-invalid={!!errors.email}
+                  aria-describedby="email-error"
                   {...register('email', {
-                    required: 'Email is require field!',
+                    required: 'Email is required',
                     pattern: {
-                      value:
-                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                      message: 'Please enter valid email!',
+                      value: EMAIL_RE,
+                      message: 'Please enter a valid email',
                     },
                   })}
                 />
-                {errors?.email && (
-                  <div style={{ color: 'red' }}>{errors.email.message}</div>
-                )}
+                <FieldError id="email-error" message={errors.email?.message} />
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input
+              <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <PasswordInput
                   id="password"
-                  type="password"
-                  required
+                  autoComplete="current-password"
+                  aria-required
+                  aria-invalid={!!errors.password}
+                  aria-describedby="password-error"
                   {...register('password', {
-                    required: 'Password is require field!',
-                    minLength: 8,
+                    required: 'Password is required',
                   })}
                 />
-                {errors?.password && (
-                  <div style={{ color: 'red' }}>{errors.password.message}</div>
-                )}
-                {errors?.password && (
-                  <div style={{ color: 'red' }}>
-                    {errors.password.type === 'minLength'
-                      ? 'Passwords must contain at least 8 characters.'
-                      : ''}
-                  </div>
-                )}
+                <FieldError
+                  id="password-error"
+                  message={errors.password?.message}
+                />
               </div>
+<<<<<<< Updated upstream
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
                   Login
                 </Button>
               </div>
+=======
+              {login.error && (
+                <div role="alert" className="text-destructive text-sm">
+                  {login.error.message}
+                </div>
+              )}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={login.isPending}
+              >
+                {login.isPending ? 'Signing in…' : 'Login'}
+              </Button>
+>>>>>>> Stashed changes
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{' '}

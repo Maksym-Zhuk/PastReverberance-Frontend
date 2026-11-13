@@ -1,71 +1,61 @@
+<<<<<<< Updated upstream
 'use state';
 import { DailyPhoto } from '@/generated/graphql';
+=======
+'use client';
+import type { DailyPhoto } from '@/types/api';
+>>>>>>> Stashed changes
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { formatDate } from '@/lib/date';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
 
 interface Props {
   data: DailyPhoto;
-  dailyPhotoUrl: string;
-  setDailyPhotoUrl: (dailyPhotoUrl: string) => void;
-  index: number;
-  activeIndex: number;
-  setActiveIndex: (index: number) => void;
+  // already passed (filled) vs. the one currently shown
+  reached: boolean;
+  current: boolean;
+  onSelect: () => void;
 }
 
 export default function DailyPhotoCircle({
   data,
-  dailyPhotoUrl,
-  setDailyPhotoUrl,
-  index,
-  activeIndex,
-  setActiveIndex,
+  reached,
+  current,
+  onSelect,
 }: Props) {
-  const [open, setOpen] = useState<boolean>(false);
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleMouseEnter = () => {
-    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-    setOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    closeTimeoutRef.current = setTimeout(() => {
-      setOpen(false);
-    }, 300);
-  };
-
   return (
-    <HoverCard key={data.id} open={open}>
+    <HoverCard openDelay={100} closeDelay={200}>
       <HoverCardTrigger asChild>
         <button
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          className={`w-5 h-5 ${dailyPhotoUrl == data.photoUrl ? 'bg-black' : (activeIndex as number) > index ? 'bg-black' : 'bg-white'} rounded-full cursor-pointer`}
-          onClick={() => {
-            setDailyPhotoUrl(data.photoUrl);
-            setActiveIndex(index);
-            setOpen(false);
-          }}
-        ></button>
+          type="button"
+          onClick={onSelect}
+          aria-label={`Show photo from ${formatDate(data.date)}`}
+          aria-current={current ? 'true' : undefined}
+          className={`size-5 shrink-0 cursor-pointer rounded-full border-2 transition-transform focus-visible:ring-[3px] focus-visible:ring-ring/50 outline-none ${
+            reached
+              ? 'bg-primary border-primary'
+              : 'bg-background border-muted-foreground/50'
+          } ${current ? 'scale-125' : ''}`}
+        />
       </HoverCardTrigger>
-      <HoverCardContent>
-        <AspectRatio
-          ratio={16 / 9}
-          className="w-full h-full bg-muted rounded-lg"
-        >
+      <HoverCardContent className="w-60">
+        <AspectRatio ratio={16 / 9} className="bg-muted rounded-lg">
           <Image
             src={data.photoUrl}
-            alt="Photo by Drew Beamer"
+            alt={`Photo from ${formatDate(data.date)}`}
             fill
-            className="h-full w-full rounded-lg object-cover dark:brightness-[0.2] dark:grayscale"
+            sizes="240px"
+            className="rounded-lg object-cover"
           />
         </AspectRatio>
+        <p className="text-muted-foreground mt-2 text-xs">
+          {formatDate(data.date)}
+        </p>
       </HoverCardContent>
     </HoverCard>
   );

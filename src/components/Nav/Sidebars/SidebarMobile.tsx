@@ -1,41 +1,35 @@
 'use client';
-import Dialog from '@/components/dailyPhotos/Dialog';
-import Drawer from '@/components/dailyPhotos/Drawer';
 import { mobileMenu } from '@/constants/menu';
-import { useOrientation } from '@/hooks/useOrientation';
-import { Menu } from '@/types/menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function SidebarMobile() {
   const pathname = usePathname();
-  const orientation = useOrientation();
 
   return (
-    <div
-      className={`lg:hidden fixed top-[90dvh] w-full ${orientation == 'landscape-primary' ? 'hidden' : 'flex h-[10dvh]'} justify-center items-center p-3 gap-3 z-10 pb-10`}
+    <nav
+      aria-label="Main"
+      className="bg-card/95 fixed inset-x-0 bottom-0 z-40 flex justify-around border-t px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden"
     >
-      <div
-        className={`${pathname == '/dailyPhotos' ? 'max-[400px]:w-[230px] w-75' : 'w-75'} duration-300 h-17.5 rounded-4xl flex justify-around items-center bg-white shadow-lg`}
-      >
-        {mobileMenu.map((item: Menu) => (
+      {mobileMenu.map((item) => {
+        const active = pathname === item.link;
+        return (
           <Link
-            href={item.link}
             key={item.id}
-            className={`${pathname == item.link ? ' bg-black text-white' : 'text-black'} cursor-pointer w-15 h-15 rounded-[30px] flex justify-center items-center`}
+            href={item.link}
+            aria-label={item.name}
+            aria-current={active ? 'page' : undefined}
+            className={`flex min-w-16 flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 text-[11px] font-medium transition-colors ${
+              active
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
           >
-            <item.icon size={28} />
+            <item.icon size={22} />
+            {item.name}
           </Link>
-        ))}
-      </div>
-      <div className={pathname == '/' ? 'flex' : 'hidden'}>
-        <div className="min-[550px]:hidden ">
-          <Drawer />
-        </div>
-        <div className="lg:hidden max-[550px]:hidden">
-          <Dialog />
-        </div>
-      </div>
-    </div>
+        );
+      })}
+    </nav>
   );
 }

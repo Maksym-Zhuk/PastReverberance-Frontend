@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -126,7 +126,6 @@
   --animate-fade-loop: fade-loop 2s ease-in-out 1;
 
   @keyframes fade-loop {
-
     0%,
     100% {
       opacity: 1;

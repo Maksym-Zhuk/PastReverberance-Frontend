@@ -1,16 +1,25 @@
 'use client';
 import DailyPhotoCircle from '@/components/rewind/DailyPhotoCircle';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
+<<<<<<< Updated upstream
 import { DailyPhoto } from '@/generated/graphql';
 import { GETDAILYPHOTO } from '@/graphql/dailyPhoto';
 import { useQuery } from '@apollo/client';
 import { Expand, Maximize, Pause, Play, Settings } from 'lucide-react';
+=======
+import { useDailyPhotos } from '@/hooks/useDailyPhotos';
+import { formatDate } from '@/lib/date';
+import { ImagePlus, Maximize, Minimize, Pause, Play } from 'lucide-react';
+>>>>>>> Stashed changes
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+const SLIDE_MS = 3000;
+const DOT = 20; // px, keeps the progress bar aligned with the dot centers
 
 export default function RewindPage() {
+<<<<<<< Updated upstream
   const { data, loading, error } = useQuery(GETDAILYPHOTO);
   const [dailyPhotoUrl, setDailyPhotoUrl] = useState<string>('');
   const [fillLine, setFillLine] = useState<number>(0);
@@ -18,12 +27,21 @@ export default function RewindPage() {
   const [fullScreen, setFullScreen] = useState<boolean>(false);
   const [isPlay, setIsPlay] = useState<boolean>(false);
   const [fadeIn, setFadeIn] = useState<boolean>(true);
+=======
+  const { data, isLoading, error } = useDailyPhotos();
+  const [index, setIndex] = useState(0);
+  const [isPlay, setIsPlay] = useState(false);
+  const [fullScreen, setFullScreen] = useState(false);
+>>>>>>> Stashed changes
 
-  const lineRef = useRef<HTMLDivElement>(null);
-  const circleRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  // API returns newest first; a rewind plays oldest -> newest
+  const photos = useMemo(() => [...(data ?? [])].reverse(), [data]);
+  const count = photos.length;
+  const safeIndex = Math.min(index, Math.max(count - 1, 0));
+  const photo = photos[safeIndex];
 
   useEffect(() => {
+<<<<<<< Updated upstream
     if (data) {
       setDailyPhotoUrl(data.getDailyPhotos[0].photoUrl);
     }
@@ -34,9 +52,43 @@ export default function RewindPage() {
 
     const index = data.getDailyPhotos.findIndex(
       (photo: DailyPhoto) => photo.photoUrl === dailyPhotoUrl,
-    );
-    if (index === -1) return;
+=======
+    if (!isPlay || count < 2) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % count), SLIDE_MS);
+    return () => clearInterval(id);
+  }, [isPlay, count]);
 
+  useEffect(() => {
+    if (!fullScreen) return;
+    const onKey = (e: KeyboardEvent) =>
+      e.key === 'Escape' && setFullScreen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [fullScreen]);
+
+  if (isLoading)
+    return <div className="bg-muted m-4 h-[60dvh] animate-pulse rounded-xl" />;
+  if (error)
+    return (
+      <p role="alert" className="text-destructive p-6 text-center">
+        Error: {error.message}
+      </p>
+    );
+  if (!photo)
+    return (
+      <div className="text-muted-foreground flex min-h-[70dvh] flex-col items-center justify-center gap-3 px-6 text-center">
+        <ImagePlus className="size-12" />
+        <p className="text-foreground text-lg font-medium">
+          Nothing to rewind yet
+        </p>
+        <Button asChild>
+          <Link href="/">Add your first photo</Link>
+        </Button>
+      </div>
+>>>>>>> Stashed changes
+    );
+
+<<<<<<< Updated upstream
     const targetEl = circleRefs.current[index];
     if (!targetEl) return;
 
@@ -75,37 +127,49 @@ export default function RewindPage() {
 
   if (loading && !dailyPhotoUrl) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+=======
+  const progress = count > 1 ? safeIndex / (count - 1) : 1;
+>>>>>>> Stashed changes
 
   return (
     <div
-      className={`w-full h-[100dvh] flex flex-col justify-between items-center ${fullScreen ? 'absolute p-5' : 'relative pr-5'}`}
+      className={`bg-background flex flex-col gap-4 p-4 lg:p-6 ${
+        fullScreen
+          ? 'fixed inset-0 z-50'
+          : 'min-h-[calc(100dvh-5rem)] lg:min-h-[100dvh]'
+      }`}
     >
-      <div className={`w-full h-[100dvh] flex justify-center items-center`}>
-        <AspectRatio
-          ratio={16 / 9}
-          className="w-full h-full flex justify-center items-center bg-muted rounded-lg"
-          onClick={() => setIsPlay(!isPlay)}
+      <div className="bg-muted relative min-h-[40dvh] flex-1 overflow-hidden rounded-xl">
+        <Image
+          key={photo.id}
+          src={photo.photoUrl}
+          alt={photo.note || `Photo from ${formatDate(photo.date)}`}
+          fill
+          priority
+          sizes="100vw"
+          className="animate-in fade-in object-contain duration-500"
+        />
+        <button
+          type="button"
+          onClick={() => setIsPlay((p) => !p)}
+          aria-label={isPlay ? 'Pause rewind' : 'Play rewind'}
+          className="absolute inset-0 flex cursor-pointer items-center justify-center outline-none"
         >
-          <Image
-            src={
-              dailyPhotoUrl
-                ? dailyPhotoUrl
-                : 'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80'
-            }
-            alt="Photo by Drew Beamer"
-            fill
-            className={`h-full w-full rounded-lg object-cover transition-opacity duration-300 ${
-              fadeIn ? 'opacity-100' : 'opacity-0'
-            } dark:brightness-[0.2] dark:grayscale`}
-          />
-          <Button
-            className={`absolute w-20 h-20 duration-700 ${isPlay ? 'opacity-0' : 'opacity-100'}`}
+          <span
+            className={`bg-primary text-primary-foreground flex size-16 items-center justify-center rounded-full shadow-lg transition-opacity duration-300 ${
+              isPlay ? 'opacity-0' : 'opacity-100'
+            }`}
           >
             {isPlay ? <Pause /> : <Play />}
-          </Button>
-        </AspectRatio>
+          </span>
+        </button>
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
+          <p className="text-sm font-medium">{formatDate(photo.date)}</p>
+          {photo.note && <p className="line-clamp-2 text-sm">{photo.note}</p>}
+        </div>
       </div>
 
+<<<<<<< Updated upstream
       <div
         className={`w-full ${fullScreen ? 'h-[7dvh]' : 'h-[10dvh]'} absolute bottom-0 flex justify-center items-center gap-5 px-3 duration-500 ${fullScreen ? 'opacity-0' : 'opacity-100'} hover:opacity-100`}
       >
@@ -127,28 +191,37 @@ export default function RewindPage() {
                 }}
                 className="z-10 flex justify-center items-center"
               >
+=======
+      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1 overflow-x-auto py-2">
+          <div className="relative flex w-max min-w-full items-center justify-between gap-3">
+            <div className="bg-muted absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full" />
+            <div
+              className="bg-primary absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full transition-all duration-500"
+              style={{
+                width: `calc(${DOT / 2}px + (100% - ${DOT}px) * ${progress})`,
+              }}
+            />
+            {photos.map((p, i) => (
+              <div key={p.id} className="relative z-10">
+>>>>>>> Stashed changes
                 <DailyPhotoCircle
-                  index={index}
-                  data={dailyPhoto}
-                  dailyPhotoUrl={dailyPhotoUrl}
-                  setDailyPhotoUrl={setDailyPhotoUrl}
-                  activeIndex={activeIndex}
-                  setActiveIndex={setActiveIndex}
+                  data={p}
+                  reached={i <= safeIndex}
+                  current={i === safeIndex}
+                  onSelect={() => setIndex(i)}
                 />
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-        <Button className="w-10 h-9 cursor-pointer">
-          <Link href={'/settings'}>
-            <Settings />
-          </Link>
-        </Button>
         <Button
-          className="w-10 h-9 cursor-pointer"
-          onClick={() => setFullScreen(!fullScreen)}
+          variant="outline"
+          size="icon"
+          onClick={() => setFullScreen((f) => !f)}
+          aria-label={fullScreen ? 'Exit full screen' : 'Full screen'}
         >
-          {fullScreen ? <Expand /> : <Maximize />}
+          {fullScreen ? <Minimize /> : <Maximize />}
         </Button>
       </div>
     </div>

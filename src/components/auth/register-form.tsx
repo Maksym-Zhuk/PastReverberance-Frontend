@@ -10,23 +10,30 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PasswordInput } from '@/components/ui/password-input';
 import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 import { useEffect } from 'react';
 import { REGISTER } from '@/graphql/auth';
 import { useRouter } from 'next/navigation';
+import { EMAIL_RE, FieldError } from './field-error';
 
-interface profile {
-  firstName: string;
-  lastName: string;
-}
-
-type Input = {
-  profile: profile;
+type FormInput = {
+  profile: { firstName: string; lastName: string };
   email: string;
   password: string;
 };
+
+// mirrors the server's IsStrongPassword defaults so users see the rules up front
+const PASSWORD_HINT =
+  'At least 8 characters with an uppercase letter, a lowercase letter, a number and a symbol.';
+const isStrong = (p: string) =>
+  p.length >= 8 &&
+  /[a-z]/.test(p) &&
+  /[A-Z]/.test(p) &&
+  /\d/.test(p) &&
+  /[^A-Za-z0-9]/.test(p);
 
 export function RegisterForm({
   className,
@@ -37,6 +44,7 @@ export function RegisterForm({
     handleSubmit,
     reset,
     formState: { errors },
+<<<<<<< Updated upstream
   } = useForm<Input>({
     mode: 'onChange',
   });
@@ -61,6 +69,30 @@ export function RegisterForm({
       },
     });
     reset();
+=======
+  } = useForm<FormInput>({ mode: 'onTouched' });
+  const registerUser = useRegister();
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<FormInput> = (data) => {
+    registerUser.mutate(
+      {
+        email: data.email.trim(),
+        password: data.password,
+        profile: {
+          firstName: data.profile.firstName.trim(),
+          lastName: data.profile.lastName.trim(),
+        },
+      },
+      {
+        onSuccess: () => {
+          reset();
+          router.push('/');
+          router.refresh();
+        },
+      },
+    );
+>>>>>>> Stashed changes
   };
 
   return (
@@ -69,98 +101,114 @@ export function RegisterForm({
         <CardHeader>
           <CardTitle>Create account</CardTitle>
           <CardDescription>
-            Enter your login and email below to register to your account
+            Enter your details below to create your account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="firstName">FirstName</Label>
-                <Input
-                  id="firstName"
-                  type="text"
-                  placeholder="FirstName"
-                  required
-                  {...register('profile.firstName', {
-                    required: 'Login is require field!',
-                  })}
-                />
-                {errors?.profile?.firstName && (
-                  <div style={{ color: 'red' }}>
-                    {errors.profile.firstName.message}
-                  </div>
-                )}
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="firstName">First name</Label>
+                  <Input
+                    id="firstName"
+                    autoComplete="given-name"
+                    aria-required
+                    aria-invalid={!!errors.profile?.firstName}
+                    aria-describedby="firstName-error"
+                    {...register('profile.firstName', {
+                      required: 'First name is required',
+                      validate: (v) => !!v.trim() || 'First name is required',
+                    })}
+                  />
+                  <FieldError
+                    id="firstName-error"
+                    message={errors.profile?.firstName?.message}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="lastName">Last name</Label>
+                  <Input
+                    id="lastName"
+                    autoComplete="family-name"
+                    aria-required
+                    aria-invalid={!!errors.profile?.lastName}
+                    aria-describedby="lastName-error"
+                    {...register('profile.lastName', {
+                      required: 'Last name is required',
+                      validate: (v) => !!v.trim() || 'Last name is required',
+                    })}
+                  />
+                  <FieldError
+                    id="lastName-error"
+                    message={errors.profile?.lastName?.message}
+                  />
+                </div>
               </div>
-              <div className="grid gap-3">
-                <Label htmlFor="lastName">LastName</Label>
-                <Input
-                  id="lastName"
-                  type="text"
-                  placeholder="LastName"
-                  required
-                  {...register('profile.lastName', {
-                    required: 'Login is require field!',
-                  })}
-                />
-                {errors?.profile?.lastName && (
-                  <div style={{ color: 'red' }}>
-                    {errors.profile.lastName.message}
-                  </div>
-                )}
-              </div>
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="m@example.com"
-                  required
+                  aria-required
+                  aria-invalid={!!errors.email}
+                  aria-describedby="email-error"
                   {...register('email', {
-                    required: 'Email is require field!',
+                    required: 'Email is required',
                     pattern: {
-                      value:
-                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                      message: 'Please enter valid email!',
+                      value: EMAIL_RE,
+                      message: 'Please enter a valid email',
                     },
                   })}
                 />
-                {errors?.email && (
-                  <div style={{ color: 'red' }}>{errors.email.message}</div>
-                )}
+                <FieldError id="email-error" message={errors.email?.message} />
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-                <Input
+              <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <PasswordInput
                   id="password"
-                  type="password"
-                  required
+                  autoComplete="new-password"
+                  aria-required
+                  aria-invalid={!!errors.password}
+                  aria-describedby="password-hint password-error"
                   {...register('password', {
-                    required: 'Password is require field!',
-                    minLength: 8,
+                    required: 'Password is required',
+                    validate: (v) => isStrong(v) || PASSWORD_HINT,
                   })}
                 />
-                {errors?.password && (
-                  <div style={{ color: 'red' }}>{errors.password.message}</div>
-                )}
-                {errors?.password && (
-                  <div style={{ color: 'red' }}>
-                    {errors.password.type === 'minLength'
-                      ? 'Passwords must contain at least 8 characters.'
-                      : ''}
-                  </div>
-                )}
+                <p id="password-hint" className="text-muted-foreground text-xs">
+                  {PASSWORD_HINT}
+                </p>
+                <FieldError
+                  id="password-error"
+                  message={errors.password?.message}
+                />
               </div>
+<<<<<<< Updated upstream
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
                   Register
                 </Button>
               </div>
+=======
+              {registerUser.error && (
+                <div role="alert" className="text-destructive text-sm">
+                  {registerUser.error.message}
+                </div>
+              )}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={registerUser.isPending}
+              >
+                {registerUser.isPending ? 'Creating account…' : 'Register'}
+              </Button>
+>>>>>>> Stashed changes
             </div>
             <div className="mt-4 text-center text-sm">
-              Do you have an account?{' '}
+              Already have an account?{' '}
               <Link href="/auth/login" className="underline underline-offset-4">
                 Sign in
               </Link>

@@ -20,6 +20,12 @@ export const mobileMenu: Menu[] = [
     link: '/profile',
     icon: User2,
   },
+  {
+    id: 4,
+    name: 'Settings',
+    link: '/settings',
+    icon: Settings,
+  },
 ];
 
 export const desktopMenu: Menu[] = [
